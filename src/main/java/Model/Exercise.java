@@ -1,4 +1,4 @@
-package org.example;
+package Model;
 
 public class Exercise {
     private int id;
