@@ -12,9 +12,10 @@ import java.util.logging.Logger;
 import Connection.ConnectionFactory;
 import Model.Exercise;
 import Model.MuscleGroup;
+import Model.WorkoutExercise;
 
 public class WorkoutExerciseDAO {
-    private static final Logger LOGGER = Logger.getLogger(ExerciseDAO.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WorkoutExerciseDAO.class.getName());
 
     public boolean addWorkoutExercise(int workoutId, int exerciseId) {
         Connection conn = null;
@@ -38,11 +39,11 @@ public class WorkoutExerciseDAO {
         return false;
     }
 
-    public List<Exercise> getAllWorkoutExercises(int workoutId) {
+    public List<WorkoutExercise> getAllWorkoutExercises(int workoutId) {
         Connection conn = null;
         PreparedStatement statement = null;
-        List<Exercise> exercises = new ArrayList<>();
-        String query = "SELECT e.exercise_id, e.name, e.muscle_group " +
+        List<WorkoutExercise> workoutExercises = new ArrayList<>();
+        String query = "SELECT we.workout_exercise_id, we.workout_id, e.exercise_id, e.name, e.muscle_group " +
                 "FROM exercises e " +
                 "JOIN workout_exercises we ON e.exercise_id = we.exercise_id " +
                 "WHERE we.workout_id = ?";
@@ -52,7 +53,13 @@ public class WorkoutExerciseDAO {
             statement.setInt(1, workoutId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                exercises.add(mapRowToExercise(rs));
+                int exId = rs.getInt("exercise_id");
+                String name = rs.getString("name");
+                MuscleGroup mg = MuscleGroup.valueOf(rs.getString("muscle_group"));
+                Exercise exercise = new Exercise(exId, name, mg);
+                int weId = rs.getInt("workout_exercise_id");
+                WorkoutExercise we = new WorkoutExercise(weId,exercise);
+                workoutExercises.add(we);
             }
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Error getting the exercises in the workout!", e);
@@ -60,7 +67,7 @@ public class WorkoutExerciseDAO {
             ConnectionFactory.close(conn);
             ConnectionFactory.close(statement);
         }
-        return exercises;
+        return workoutExercises;
     }
 
     private Exercise mapRowToExercise(ResultSet rs) throws SQLException {
@@ -77,6 +84,7 @@ public class WorkoutExerciseDAO {
         try {
             conn = ConnectionFactory.getConnection();
             statement = conn.prepareStatement(query);
+            statement.setInt(1, workoutExerciseId);
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
                 return true;

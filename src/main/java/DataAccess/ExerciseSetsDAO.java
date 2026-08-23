@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ExerciseSetsDAO {
-    private static final Logger LOGGER = Logger.getLogger(ExerciseDAO.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ExerciseSetsDAO.class.getName());
 
 
     public boolean addSet(ExerciseSet set, int WorkoutExerciseId) {

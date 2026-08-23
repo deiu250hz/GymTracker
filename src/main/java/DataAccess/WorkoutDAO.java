@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import Connection.ConnectionFactory;
 
 public class WorkoutDAO {
-    private static final Logger LOGGER = Logger.getLogger(ExerciseDAO.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WorkoutDAO.class.getName());
 
     public boolean addWorkout(Workout workout) {
         Connection conn = null;
