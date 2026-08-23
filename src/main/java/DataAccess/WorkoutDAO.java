@@ -19,7 +19,7 @@ import Connection.ConnectionFactory;
 public class WorkoutDAO {
     private static final Logger LOGGER = Logger.getLogger(WorkoutDAO.class.getName());
 
-    public boolean addWorkout(Workout workout) {
+    public int addWorkout(Workout workout) {
         Connection conn = null;
         PreparedStatement statement = null;
         String query = "INSERT INTO workouts (name,workout_date) VALUES (?,?)";
@@ -30,7 +30,11 @@ public class WorkoutDAO {
             statement.setObject(2, workout.getDate());
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                return true;
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                }
             }
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Error creating new workout!", e);
@@ -38,7 +42,7 @@ public class WorkoutDAO {
             ConnectionFactory.close(conn);
             ConnectionFactory.close(statement);
         }
-        return false;
+        return -1;
     }
 
     public Workout getWorkoutById(int id) {
