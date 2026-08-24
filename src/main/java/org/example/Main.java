@@ -3,11 +3,10 @@ package org.example;
 import DataAccess.ExerciseDAO;
 import Model.Exercise;
 import Model.MuscleGroup;
+import View.MainWindow;
 
 public class Main {
     public static void main(String[] args) {
-        ExerciseDAO exerciseDAO = new ExerciseDAO();
-        Exercise ex = new Exercise(0,"Bench Press", MuscleGroup.CHEST);
-        exerciseDAO.addExercise(ex);
+      MainWindow.main(args);
     }
 }

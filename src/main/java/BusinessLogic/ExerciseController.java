@@ -3,6 +3,7 @@ package BusinessLogic;
 import DataAccess.ExerciseDAO;
 import Model.Exercise;
 import Model.MuscleGroup;
+import Model.Workout;
 
 import java.util.List;
 
@@ -50,11 +51,20 @@ public class ExerciseController {
         if (newMuscleGroup == null) {
             throw new IllegalArgumentException("Muscle group cannot be null!");
         }
-        if (exerciseDAO.exerciseExists(newName)) {
+        if (!oldExercise.getName().equalsIgnoreCase(newName) && exerciseDAO.exerciseExists(newName)) {
             throw new IllegalArgumentException("Exercise already exists!");
         }
         Exercise newExercise = new Exercise(0, newName, newMuscleGroup);
         return exerciseDAO.updateExercise(oldExercise, newExercise);
+    }
+
+    public boolean deleteExercise(int exerciseId) {
+        Exercise exercise = exerciseDAO.getExerciseById(exerciseId);
+        if (exercise == null) {
+            throw new IllegalArgumentException("Workout with id " + exerciseId + " does not exist");
+        }
+        exerciseDAO.deleteExercise(exerciseId);
+        return true;
     }
 
     public List<MuscleGroup> getAllMuscleGroups() {
